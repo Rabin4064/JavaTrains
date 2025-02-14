@@ -1,9 +1,11 @@
+package JavaTrains;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class BankMain3 {
+public class BankMain {
     // values from BankAcount class:
-    static BankAcount bank = new BankAcount();
+    static BankAccount bank = new BankAccount();
     static ArrayList<String> users = bank.users;
     static ArrayList<String> paswswords = bank.passwords;
     static ArrayList<Integer> balances = bank.balances;
@@ -50,7 +52,7 @@ public class BankMain3 {
             firstPage();
         } else {
             if (users.contains(name)) {
-                System.out.println("You signed up befor. Going to login page...");
+                System.out.println("You signed up before. Going to login page...");
                 login();
             } else {
                 users.add(name);
@@ -67,7 +69,7 @@ public class BankMain3 {
                 int balance = myObj.nextInt();
                 System.out.println(balance);
                 balances.add(balance);
-                
+
                 System.out.println("Your informations are seted successfully!");
                 System.out.println("Now you can log in. Going to login page...");
                 login();
@@ -85,7 +87,7 @@ public class BankMain3 {
             firstPage();
         } else {
             if (users.contains(name) == false) {
-                System.out.println("You have to sign up firs. Going to sign up page...");
+                System.out.println("You have to sign up first. Going to sign up page...");
                 signup();
             } else {
                 myObj = new Scanner(System.in);
@@ -103,6 +105,7 @@ public class BankMain3 {
 
                 myObj = new Scanner(System.in);
                 System.out.println("What do you want to do? transfer or changename or changepassword?");
+                System.out.print("-->");
                 String act = again(myObj.nextLine());
 
                 while (act.equals("transfer")==false && act.equals("changepassword")==false && act.equals("changename")==false) {
@@ -113,7 +116,7 @@ public class BankMain3 {
                 }
 
                 if (act.equals("transfer")) {
-                    transfer();
+                    transfer(myIndex);
                 } else if (act.equals("changename")) {
                     changeName(name);
                 } else if (act.equals("changepassword")) {
@@ -124,8 +127,47 @@ public class BankMain3 {
     }
 
     // transfer page:
-    static void transfer() {
-        // writing...
+    static void transfer(int myIndex) {
+        Scanner myObj = new Scanner(System.in);
+        System.out.println("Who do you want to transfer to?");
+        System.out.print("-->");
+        String destination = again(myObj.nextLine());
+
+        if (users.contains(destination) == false) {
+            System.out.println("He/She does not have an account in this bank. Going to first page...");
+            firstPage();
+        } else {
+            myObj = new Scanner(System.in);
+            System.out.println("How much money do you want to transfer?");
+            System.out.print("-->");
+            int amount = myObj.nextInt();
+            while (amount <= 0) {
+                myObj = new Scanner(System.in);
+                System.out.println("Something went wrong. please enter again:");
+                System.out.print("-->");
+                amount = myObj.nextInt();
+            }
+            while (amount > balances.get(myIndex)) {
+                myObj = new Scanner(System.in);
+                System.out.println("You don not have that much money. please enter again:");
+                System.out.print("-->");
+                amount = myObj.nextInt();
+            }
+
+            int different = balances.get(myIndex) - amount;
+            balances.set(myIndex, different);
+
+            int myIndex2 = users.indexOf(destination);
+            different = balances.get(myIndex2) + amount;
+            balances.set(myIndex2, different);
+
+            System.out.println("Done successfully.");
+            System.out.println("You have " + balances.get(myIndex) + "$ money.");
+            System.out.println(users.get(myIndex2) + " have " + balances.get(myIndex2) + "$ money.");
+            System.out.println("Going to first page...");
+            firstPage();
+        }
+
     }
 
     // change name page:
